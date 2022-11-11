@@ -1,3 +1,4 @@
+import { TupleResult } from "../utils";
 import { Money } from "./Money";
 
 export type WalletTransactionEvent = {
@@ -46,10 +47,17 @@ export class Wallet {
     return false;
   }
 
-  private RemoveMoney(money: Money): boolean {
-    if (money.units > this._money.units) return false;
+  private RemoveMoney(money: Money): TupleResult {
+    if (money.units > this._money.units)
+      return [
+        false,
+        `Not enough money in the wallet to remove ${money.toString()}.`,
+      ];
     if (money.units === this._money.units && money.cents > this._money.cents)
-      return false;
+      return [
+        false,
+        `Not enough money in the wallet to remove ${money.toString()}.`,
+      ];
 
     const units = this._money.units - money.units;
     const cents = this._money.cents - money.cents;
@@ -57,9 +65,13 @@ export class Wallet {
     const newMoney = Money.Create(units, cents);
     if (newMoney) {
       this._money = newMoney;
-      return true;
+      return [true];
     }
-    return false;
+
+    return [
+      false,
+      "Unspecified error happend while removing money from wallet.",
+    ];
   }
 
   get OwnerId() {
@@ -86,9 +98,15 @@ export class Wallet {
     ];
   }
 
-  Give(money: Money, toOwnerId: string): boolean {
+  Give(money: Money, toOwnerId: string): TupleResult {
     if (toOwnerId.length === 0) throw new Error("toOwnerId was empty.");
-    if (!this.RemoveMoney(money)) return false;
+
+    const removeResult = this.RemoveMoney(money);
+    if (!removeResult[0])
+      return [
+        false,
+        `Failed to give owner "${toOwnerId}" money: removeResult[1]`,
+      ];
 
     this._transactionEvents = [
       ...this._transactionEvents,
@@ -100,6 +118,6 @@ export class Wallet {
       },
     ];
 
-    return true;
+    return [true];
   }
 }

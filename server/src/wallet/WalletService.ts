@@ -1,3 +1,4 @@
+import { TupleResult } from "../utils";
 import { Money } from "./Money";
 import { Wallet, WalletBalance } from "./Wallet";
 
@@ -15,7 +16,15 @@ export class WalletService {
     return this._wallets.get(ownerId);
   }
 
-  CreateWallet(ownerId: string): [boolean, string?] {
+  /**
+   * Creates a new wallet managed by this service,
+   * for the specified owner ID.
+   * @param ownerId The owner's unique ID.
+   * @returns A {@link TupleResult}.
+   */
+  CreateWallet(ownerId: string): TupleResult {
+    if (ownerId.length === 0) throw new Error("ownerId was empty.");
+
     if (this._wallets.has(ownerId))
       return [false, `A wallet for owner with ID "${ownerId}" already exists.`];
 
@@ -31,11 +40,7 @@ export class WalletService {
     return wallet.Balance;
   }
 
-  Transfer(
-    money: Money,
-    fromOwnerId: string,
-    toOwnerId: string
-  ): [boolean, string?] {
+  Transfer(money: Money, fromOwnerId: string, toOwnerId: string): TupleResult {
     const fromWallet = this.GetWallet(fromOwnerId);
     if (!fromWallet) return [false, "Source wallet does not exist."];
 
