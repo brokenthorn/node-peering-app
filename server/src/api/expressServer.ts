@@ -1,7 +1,7 @@
 import http from "http";
 import { AddressInfo } from "net";
+import { logInformation } from "../utils";
 import { expressApp } from "./expressApp";
-import { logInformation } from "./utils";
 
 const server = http.createServer(expressApp);
 

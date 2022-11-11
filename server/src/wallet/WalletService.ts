@@ -1,7 +1,7 @@
-import { Money } from "./wallet/Money";
-import { Wallet, WalletBalance } from "./wallet/Wallet";
+import { Money } from "./Money";
+import { Wallet, WalletBalance } from "./Wallet";
 
-export class Service {
+export class WalletService {
   private _wallets: Map<string, Wallet>;
 
   /**
