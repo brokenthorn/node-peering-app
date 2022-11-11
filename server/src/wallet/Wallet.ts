@@ -48,12 +48,10 @@ export class Wallet {
   }
 
   private RemoveMoney(money: Money): TupleResult {
-    if (money.units > this._money.units)
-      return [
-        false,
-        `Not enough money in the wallet to remove ${money.toString()}.`,
-      ];
-    if (money.units === this._money.units && money.cents > this._money.cents)
+    if (
+      money.units > this._money.units ||
+      (money.units === this._money.units && money.cents > this._money.cents)
+    )
       return [
         false,
         `Not enough money in the wallet to remove ${money.toString()}.`,
