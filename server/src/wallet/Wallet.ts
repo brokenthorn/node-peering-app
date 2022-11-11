@@ -1,14 +1,16 @@
 import { Money } from "./Money";
 
-type WalletTransactionEvent = {
+export type WalletTransactionEvent = {
   readonly Date: Date;
   readonly FromOwnerId: string;
   readonly ToOwnerId: string;
   readonly Amount: Money;
 };
 
+export type WalletBalance = { units: Number; cents: Number };
+
 export class Wallet {
-  private _ownerId: string;
+  private readonly _ownerId: string;
   private _money: Money;
   private _transactionEvents: WalletTransactionEvent[];
 
@@ -58,6 +60,14 @@ export class Wallet {
       return true;
     }
     return false;
+  }
+
+  get OwnerId() {
+    return this._ownerId;
+  }
+
+  get Balance(): WalletBalance {
+    return { units: this._money.units, cents: this._money.cents };
   }
 
   Receive(money: Money, fromOwnerId: string) {

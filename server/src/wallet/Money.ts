@@ -29,12 +29,16 @@ export class Money {
     }
   }
 
-  public static Create(units: number, cents: number): Money | undefined {
+  static Create(units: number, cents: number): Money | undefined {
     if (!Number.isInteger(units) || !Number.isInteger(cents)) return;
     return new Money(units, cents);
   }
 
-  public static Zero(): Money {
+  static Zero(): Money {
     return new Money(0, 0);
+  }
+
+  toString() {
+    return `${this.units} monetary units and ${this.cents} cents`;
   }
 }
