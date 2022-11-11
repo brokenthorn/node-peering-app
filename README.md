@@ -15,9 +15,9 @@ development process.
 The client is a command line application which accepts commands interactively and
 executes them, communicating with the server.
 
-Both the client and the server use WebSockets through Socket.IO to bidirectionally
-communicate in realtime, mostly for sending events like money received and for sending
-user messages to other clients.
+Both the client and the server use WebSockets to bidirectionally communicate in realtime,
+mostly for sending events like money received and for sending user messages to other clients.
+The server uses the `ws` library to implement the WebSocket server.
 
 ## Scope
 
