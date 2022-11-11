@@ -24,3 +24,13 @@ user messages to other clients.
 I'm putting this code out there so that maybe it helps someone looking for the same
 things I did when I started writing it, although I would recommend that you try to
 write something yourself as that is probably the <del>only</del> best way to learn.
+
+## How to run
+
+The server and client need to be built then run. You need Node to be installed and
+all dependencies to be installed for each project.
+
+Telling you how to run Node apps is outside the scope of this small project, but basically
+once you have everything installed, just open a terminal for each project, navigate to
+their folders and run `npm run build` and `npm start`, or just run `npm run dev` to run
+in development mode.
