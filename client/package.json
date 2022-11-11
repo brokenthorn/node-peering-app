@@ -15,5 +15,8 @@
     "@types/node": "^18.11.9",
     "rimraf": "^3.0.2",
     "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "cuid": "^2.1.8"
   }
 }
