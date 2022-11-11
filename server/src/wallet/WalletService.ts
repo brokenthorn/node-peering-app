@@ -15,16 +15,19 @@ export class WalletService {
     return this._wallets.get(ownerId);
   }
 
-  CreateWallet(ownerId: string): boolean {
-    if (this._wallets.has(ownerId)) return false;
+  CreateWallet(ownerId: string): [boolean, string?] {
+    if (this._wallets.has(ownerId))
+      return [false, `A wallet for owner with ID "${ownerId}" already exists.`];
+
     const wallet = new Wallet(ownerId);
     this._wallets.set(ownerId, wallet);
-    return true;
+    return [true];
   }
 
   GetWalletBalance(ownerId: string): WalletBalance | undefined {
     const wallet = this._wallets.get(ownerId);
     if (!wallet) return;
+
     return wallet.Balance;
   }
 
