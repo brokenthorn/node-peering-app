@@ -4,7 +4,7 @@
  * The string is an optional error message to be used if the boolean
  * is set to `false`, to relay the cause of the error.
  */
-export type TupleResult = [boolean, string?];
+export type TupleResult = readonly [boolean, string?];
 
 /**
  * Wrapper for `console.log(...)` that prepends `INFO:` to the message.
