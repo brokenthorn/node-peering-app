@@ -47,7 +47,6 @@ export class Wallet {
     return false;
   }
 
-  // FIXME: Broken logic! Removes money that does not exist!
   private RemoveMoney(money: Money): TupleResult {
     const totalCents = this._money.cents + this._money.units * 100;
     const totalCentsToRemove = money.cents + money.units * 100;
