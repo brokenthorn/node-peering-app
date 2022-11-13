@@ -15,12 +15,20 @@ const shutdownOnSignal = (signal: NodeJS.Signals) => {
   server.close(() => logInformation("Server has shut down."));
 };
 
+const SIGKILL: NodeJS.Signals = "SIGKILL";
+const SIGINT: NodeJS.Signals = "SIGINT";
+const SIGTERM: NodeJS.Signals = "SIGTERM";
+const SIGHUP: NodeJS.Signals = "SIGHUP";
+const SIGUSR1: NodeJS.Signals = "SIGUSR1";
+const SIGUSR2: NodeJS.Signals = "SIGUSR2";
+
 // add process signal handlers:
-process.on("SIGTERM", () => shutdownOnSignal("SIGTERM"));
-process.on("SIGINT", () => shutdownOnSignal("SIGINT"));
-process.on("SIGHUP", () => shutdownOnSignal("SIGHUP"));
-process.on("SIGUSR1", () => shutdownOnSignal("SIGUSR1"));
-process.on("SIGUSR2", () => shutdownOnSignal("SIGUSR2"));
+process.on(SIGTERM, () => shutdownOnSignal(SIGTERM));
+process.on(SIGKILL, () => shutdownOnSignal(SIGKILL));
+process.on(SIGINT, () => shutdownOnSignal(SIGINT));
+process.on(SIGHUP, () => shutdownOnSignal(SIGHUP));
+process.on(SIGUSR1, () => shutdownOnSignal(SIGUSR1));
+process.on(SIGUSR2, () => shutdownOnSignal(SIGUSR2));
 
 // close and restart the server on internal server errors:
 server.on("error", (e) => {
