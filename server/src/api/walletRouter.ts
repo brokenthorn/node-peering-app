@@ -70,7 +70,7 @@ walletRouter.post("/:ownerId/create", (req, res) => {
   });
 });
 
-walletRouter.post("transfer", async (req, res) => {
+walletRouter.post("/transfer", async (req, res) => {
   const body = req.body;
   let transferMoneyInput;
 
