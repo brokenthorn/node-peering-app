@@ -47,22 +47,25 @@ export class Wallet {
     return false;
   }
 
+  // FIXME: Broken logic! Removes money that does not exist!
   private RemoveMoney(money: Money): TupleResult {
-    if (
-      money.units > this._money.units ||
-      (money.units === this._money.units && money.cents > this._money.cents)
-    )
+    const totalCents = this._money.cents + this._money.units * 100;
+    const totalCentsToRemove = money.cents + money.units * 100;
+
+    if (totalCentsToRemove > totalCents) {
       return [
         false,
         `Not enough money in the wallet to remove ${money.toString()}.`,
       ];
+    }
 
-    const units = this._money.units - money.units;
-    const cents = this._money.cents - money.cents;
+    const remainingTotalCents = totalCents - totalCentsToRemove;
+    const remainingUnits = Math.floor(remainingTotalCents / 100);
+    const remainingCents = remainingTotalCents % 100;
+    const remainingMoney = Money.Create(remainingUnits, remainingCents);
 
-    const newMoney = Money.Create(units, cents);
-    if (newMoney) {
-      this._money = newMoney;
+    if (remainingMoney !== undefined) {
+      this._money = remainingMoney;
       return [true];
     }
 
@@ -100,10 +103,11 @@ export class Wallet {
     if (toOwnerId.length === 0) throw new Error("toOwnerId was empty.");
 
     const removeResult = this.RemoveMoney(money);
-    if (!removeResult[0])
+
+    if (removeResult[0] === false)
       return [
         false,
-        `Failed to give owner "${toOwnerId}" money: removeResult[1]`,
+        `Failed to give owner "${toOwnerId}" money: ${removeResult[1]}`,
       ];
 
     this._transactionEvents = [

@@ -47,12 +47,18 @@ export class WalletService {
     const toWallet = this.GetWallet(toOwnerId);
     if (!toWallet) return [false, "Destination wallet does not exist"];
 
+    // TODO: The follownig two operations (Give and Receive) should be guarranteed to be one atomic transaction!
+
     const gave = fromWallet.Give(money, toOwnerId);
-    if (!gave)
+
+    if (gave[0] === false) {
       return [
         false,
-        `Source wallet of owner "${fromOwnerId}" does not have enough money to give out ${money.toString()} to user "${toOwnerId}".`,
+        `Failed to give ${money.toString()} from owner "${fromOwnerId}" to owner "${toOwnerId}". ${
+          gave[1]
+        }`,
       ];
+    }
 
     toWallet.Receive(money, fromOwnerId);
 

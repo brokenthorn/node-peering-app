@@ -31,6 +31,12 @@ const walletService = new WalletService();
 
 export const walletRouter = express.Router();
 
+walletRouter.use(
+  express.json({
+    limit: 100 * 1000,
+  })
+);
+
 walletRouter.get("/:ownerId/balance", (req, res) => {
   const ownerId = req.params.ownerId;
 
@@ -72,6 +78,12 @@ walletRouter.post("/:ownerId/create", (req, res) => {
 
 walletRouter.post("/transfer", async (req, res) => {
   const body = req.body;
+
+  if (!body) {
+    res.status(StatusCodes.BAD_REQUEST).json({ error: "Empty request body." });
+    return;
+  }
+
   let transferMoneyInput;
 
   try {
