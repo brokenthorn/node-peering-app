@@ -64,46 +64,51 @@ walletRouter.post(":ownerId/create", (req, res) => {
 
 walletRouter.post("transfer", async (req, res) => {
   const body = req.body;
+  let transferMoneyInput;
 
   try {
-    const transferMoneyInput = await TransferMoneyInput.parseAsync(body);
-
-    if (
-      transferMoneyInput.money.units === 0 &&
-      transferMoneyInput.money.cents === 0
-    ) {
-      res.status(StatusCodes.BAD_REQUEST).json({
-        error: "Requested transfer amount was 0.",
-      });
-    } else {
-      const money = Money.Create(
-        transferMoneyInput.money.units,
-        transferMoneyInput.money.cents
-      );
-
-      if (!money) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-          error: "Invalid money amount.",
-        });
-      } else {
-        const transferResult = ws.Transfer(
-          money,
-          transferMoneyInput.fromOwnerId,
-          transferMoneyInput.toOwnerId
-        );
-
-        if (transferResult[0]) {
-          res.json({
-            success: true,
-          });
-        } else {
-          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            error: transferResult[1],
-          });
-        }
-      }
-    }
+    transferMoneyInput = await TransferMoneyInput.parseAsync(body);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(error);
+    return;
   }
+
+  if (
+    transferMoneyInput.money.units === 0 &&
+    transferMoneyInput.money.cents === 0
+  ) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: "Requested transfer amount was 0.",
+    });
+    return;
+  }
+
+  const money = Money.Create(
+    transferMoneyInput.money.units,
+    transferMoneyInput.money.cents
+  );
+
+  if (!money) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: "Invalid money amount.",
+    });
+    return;
+  }
+
+  const transferResult = ws.Transfer(
+    money,
+    transferMoneyInput.fromOwnerId,
+    transferMoneyInput.toOwnerId
+  );
+
+  if (!transferResult[0]) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: transferResult[1],
+    });
+    return;
+  }
+
+  res.json({
+    success: true,
+  });
 });
