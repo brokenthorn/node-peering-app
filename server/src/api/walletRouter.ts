@@ -27,13 +27,13 @@ const TransferMoneyInput = z.object({
 });
 
 /** Wallet Service instance. */
-const ws = new WalletService();
+const walletService = new WalletService();
 
 export const walletRouter = express.Router();
 
 walletRouter.get(":ownerId/balance", (req, res) => {
   const ownerId = req.params.ownerId;
-  const walletBalance = ws.GetWalletBalance(ownerId);
+  const walletBalance = walletService.GetWalletBalance(ownerId);
 
   if (!walletBalance) {
     res.status(StatusCodes.NOT_FOUND).json({
@@ -55,7 +55,7 @@ walletRouter.post(":ownerId/create", (req, res) => {
     return;
   }
 
-  const createResult = ws.CreateWallet(ownerId);
+  const createResult = walletService.CreateWallet(ownerId);
 
   if (createResult[0] !== true) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -102,7 +102,7 @@ walletRouter.post("transfer", async (req, res) => {
     return;
   }
 
-  const transferResult = ws.Transfer(
+  const transferResult = walletService.Transfer(
     money,
     transferMoneyInput.fromOwnerId,
     transferMoneyInput.toOwnerId
