@@ -31,8 +31,9 @@ const walletService = new WalletService();
 
 export const walletRouter = express.Router();
 
-walletRouter.get(":ownerId/balance", (req, res) => {
+walletRouter.get("/:ownerId/balance", (req, res) => {
   const ownerId = req.params.ownerId;
+
   const walletBalance = walletService.GetWalletBalance(ownerId);
 
   if (!walletBalance) {
@@ -45,7 +46,7 @@ walletRouter.get(":ownerId/balance", (req, res) => {
   res.json(walletBalance);
 });
 
-walletRouter.post(":ownerId/create", (req, res) => {
+walletRouter.post("/:ownerId/create", (req, res) => {
   const ownerId = req.params.ownerId;
 
   if (ownerId.trim().length === 0) {
