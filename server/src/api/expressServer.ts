@@ -40,13 +40,6 @@ server.on("error", (e) => {
   }, 1000);
 });
 
-// log each request:
-server.on("request", (req, res) => {
-  logInformation(
-    `${req.method ?? "???"}: ${req.url} by ${req.socket.remoteAddress}`
-  );
-});
-
 const port = Number(process.env.PORT) || 8080;
 const hostname = process.env.HOSTNAME ?? "localhost";
 
