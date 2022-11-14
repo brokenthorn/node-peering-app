@@ -1,10 +1,10 @@
 export class Money {
-  private _units: number = 0;
+  private _units = 0;
   public get units(): number {
     return this._units;
   }
 
-  private _cents: number = 0;
+  private _cents = 0;
   public get cents(): number {
     return this._cents;
   }
@@ -30,7 +30,10 @@ export class Money {
   }
 
   static Create(units: number, cents: number): Money | undefined {
-    if (!Number.isInteger(units) || !Number.isInteger(cents)) return;
+    if (!Number.isInteger(units) || !Number.isInteger(cents)) {
+      return undefined;
+    }
+
     return new Money(units, cents);
   }
 

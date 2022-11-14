@@ -8,7 +8,7 @@ export type WalletTransactionEvent = {
   readonly Amount: Money;
 };
 
-export type WalletBalance = { units: Number; cents: Number };
+export type WalletBalance = { units: number; cents: number };
 
 export class Wallet {
   private readonly _ownerId: string;
@@ -19,7 +19,10 @@ export class Wallet {
    * Construct a default empty wallet.
    */
   constructor(ownerId: string) {
-    if (ownerId.length === 0) throw new Error("ownerId was empty.");
+    if (ownerId.length === 0) {
+      throw new Error("ownerId was empty.");
+    }
+
     this._ownerId = ownerId;
     this._money = Money.Zero();
     this._transactionEvents = [];
@@ -30,20 +33,25 @@ export class Wallet {
     let cents = 0;
 
     const totalCents = this._money.cents + money.cents;
+
     if (totalCents < 100) {
       cents = totalCents;
     } else {
       const remainingCents = totalCents % 100;
       cents = remainingCents;
+
       const unitsFromCents = Math.floor(totalCents / 100);
       units += unitsFromCents;
     }
 
     const newMoney = Money.Create(units, cents);
+
     if (newMoney) {
       this._money = newMoney;
+
       return true;
     }
+
     return false;
   }
 
@@ -64,6 +72,7 @@ export class Wallet {
 
     if (remainingMoney !== undefined) {
       this._money = remainingMoney;
+
       return Ok(undefined);
     }
 
@@ -79,7 +88,9 @@ export class Wallet {
   }
 
   Receive(money: Money, fromOwnerId: string) {
-    if (fromOwnerId.length === 0) throw new Error("fromOwnerId was empty.");
+    if (fromOwnerId.length === 0) {
+      throw new Error("fromOwnerId was empty.");
+    }
 
     this.AddMoney(money);
 
@@ -95,7 +106,9 @@ export class Wallet {
   }
 
   Give(money: Money, toOwnerId: string): Result<undefined, string> {
-    if (toOwnerId.length === 0) throw new Error("toOwnerId was empty.");
+    if (toOwnerId.length === 0) {
+      throw new Error("toOwnerId was empty.");
+    }
 
     const removeResult = this.RemoveMoney(money);
 

@@ -23,19 +23,26 @@ export class WalletService {
    * @returns A {@link Result<undefined, string>}.
    */
   CreateWallet(ownerId: string): Result<undefined, string> {
-    if (ownerId.length === 0) throw new Error("ownerId was empty.");
+    if (ownerId.length === 0) {
+      throw new Error("ownerId was empty.");
+    }
 
-    if (this._wallets.has(ownerId))
+    if (this._wallets.has(ownerId)) {
       return Err(`A wallet for owner with ID "${ownerId}" already exists.`);
+    }
 
     const wallet = new Wallet(ownerId);
     this._wallets.set(ownerId, wallet);
+
     return Ok(undefined);
   }
 
   GetWalletBalance(ownerId: string): WalletBalance | undefined {
     const wallet = this._wallets.get(ownerId);
-    if (!wallet) return;
+
+    if (!wallet) {
+      return undefined;
+    }
 
     return wallet.Balance;
   }

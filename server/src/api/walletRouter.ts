@@ -39,13 +39,13 @@ walletRouter.use(
 
 walletRouter.get("/:ownerId/balance", (req, res) => {
   const ownerId = req.params.ownerId;
-
   const walletBalance = walletService.GetWalletBalance(ownerId);
 
   if (!walletBalance) {
     res.status(StatusCodes.NOT_FOUND).json({
       error: `No wallet found for user ${ownerId}.`,
     });
+
     return;
   }
 
@@ -59,6 +59,7 @@ walletRouter.post("/:ownerId/create", (req, res) => {
     res.status(StatusCodes.BAD_REQUEST).json({
       error: "The owner ID was empty.",
     });
+
     return;
   }
 
@@ -68,6 +69,7 @@ walletRouter.post("/:ownerId/create", (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       error: createResult.unwrapErr(),
     });
+
     return;
   }
 
@@ -81,6 +83,7 @@ walletRouter.post("/transfer", async (req, res) => {
 
   if (!body) {
     res.status(StatusCodes.BAD_REQUEST).json({ error: "Empty request body." });
+
     return;
   }
 
@@ -90,6 +93,7 @@ walletRouter.post("/transfer", async (req, res) => {
     transferMoneyInput = await TransferMoneyInput.parseAsync(body);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(error);
+
     return;
   }
 
@@ -100,6 +104,7 @@ walletRouter.post("/transfer", async (req, res) => {
     res.status(StatusCodes.BAD_REQUEST).json({
       error: "Requested transfer amount was 0.",
     });
+
     return;
   }
 
@@ -112,6 +117,7 @@ walletRouter.post("/transfer", async (req, res) => {
     res.status(StatusCodes.BAD_REQUEST).json({
       error: "Invalid money amount.",
     });
+
     return;
   }
 
@@ -125,6 +131,7 @@ walletRouter.post("/transfer", async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       error: transferResult.unwrapErr(),
     });
+
     return;
   }
 
