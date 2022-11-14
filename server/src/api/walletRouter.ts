@@ -73,6 +73,18 @@ walletRouter.post("/:ownerId/create", (req, res) => {
     return;
   }
 
+  const bonusMoney = Money.Create(100, 0).unwrap();
+  const bonusTransferResult = walletService.GiveBonus(bonusMoney, ownerId);
+
+  if (bonusTransferResult.isErr()) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: true,
+      warning: `Failed to deposit initial bonus: ${bonusTransferResult.unwrapErr()}`,
+    });
+
+    return;
+  }
+
   res.json({
     success: true,
   });
@@ -108,21 +120,21 @@ walletRouter.post("/transfer", async (req, res) => {
     return;
   }
 
-  const money = Money.Create(
+  const moneyResult = Money.Create(
     transferMoneyInput.money.units,
     transferMoneyInput.money.cents
   );
 
-  if (!money) {
+  if (moneyResult.isErr()) {
     res.status(StatusCodes.BAD_REQUEST).json({
-      error: "Invalid money amount.",
+      error: moneyResult.unwrapErr(),
     });
 
     return;
   }
 
   const transferResult = walletService.Transfer(
-    money,
+    moneyResult.unwrap(),
     transferMoneyInput.fromOwnerId,
     transferMoneyInput.toOwnerId
   );

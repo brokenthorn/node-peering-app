@@ -1,4 +1,5 @@
 import { Err, Ok, Result } from "@sniptt/monads";
+import { IWallet } from "./IWallet";
 import { Money } from "./Money";
 
 export type WalletTransactionEvent = {
@@ -8,9 +9,14 @@ export type WalletTransactionEvent = {
   readonly Amount: Money;
 };
 
+/** A wallet's balance in monetary units and cents. */
 export type WalletBalance = { units: number; cents: number };
 
-export class Wallet {
+/**
+ * A wallet is an aggregate that holds money.
+ * It can
+ */
+export class Wallet implements IWallet {
   private readonly _ownerId: string;
   private _money: Money;
   private _transactionEvents: WalletTransactionEvent[];
@@ -44,10 +50,10 @@ export class Wallet {
       units += unitsFromCents;
     }
 
-    const newMoney = Money.Create(units, cents);
+    const newMoneyResult = Money.Create(units, cents);
 
-    if (newMoney) {
-      this._money = newMoney;
+    if (newMoneyResult.isOk()) {
+      this._money = newMoneyResult.unwrap();
 
       return true;
     }
@@ -68,15 +74,15 @@ export class Wallet {
     const remainingTotalCents = totalCents - totalCentsToRemove;
     const remainingUnits = Math.floor(remainingTotalCents / 100);
     const remainingCents = remainingTotalCents % 100;
-    const remainingMoney = Money.Create(remainingUnits, remainingCents);
+    const remainingMoneyResult = Money.Create(remainingUnits, remainingCents);
 
-    if (remainingMoney !== undefined) {
-      this._money = remainingMoney;
+    if (remainingMoneyResult.isOk()) {
+      this._money = remainingMoneyResult.unwrap();
 
       return Ok(undefined);
     }
 
-    return Err("Unspecified error happend while removing money from wallet.");
+    return Err(remainingMoneyResult.unwrapErr());
   }
 
   get OwnerId() {
@@ -87,7 +93,7 @@ export class Wallet {
     return { units: this._money.units, cents: this._money.cents };
   }
 
-  Receive(money: Money, fromOwnerId: string) {
+  Receive(money: Money, fromOwnerId: string): void {
     if (fromOwnerId.length === 0) {
       throw new Error("fromOwnerId was empty.");
     }

@@ -78,4 +78,23 @@ export class WalletService {
 
     return Ok(undefined);
   }
+
+  /**
+   * Gives a user a bonus.
+   * @param money Amount of bonus money to receive.
+   * @param toOwnerId The user that will get the bonus.
+   * @returns A {@link Result<undefined, string>}
+   */
+  GiveBonus(money: Money, toOwnerId: string): Result<undefined, string> {
+    const fromOwnerId = "clahfti0t000008l9gafmaavn";
+    const toWallet = this.GetWallet(toOwnerId);
+
+    if (!toWallet) {
+      return Err("Destination wallet does not exist");
+    }
+
+    toWallet.Receive(money, fromOwnerId);
+
+    return Ok(undefined);
+  }
 }
