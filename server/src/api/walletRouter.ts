@@ -64,9 +64,9 @@ walletRouter.post("/:ownerId/create", (req, res) => {
 
   const createResult = walletService.CreateWallet(ownerId);
 
-  if (createResult[0] !== true) {
+  if (createResult.isErr()) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      error: createResult[1],
+      error: createResult.unwrapErr(),
     });
     return;
   }
@@ -121,9 +121,9 @@ walletRouter.post("/transfer", async (req, res) => {
     transferMoneyInput.toOwnerId
   );
 
-  if (transferResult[0] !== true) {
+  if (transferResult.isErr()) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      error: transferResult[1],
+      error: transferResult.unwrapErr(),
     });
     return;
   }

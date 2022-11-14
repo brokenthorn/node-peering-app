@@ -1,4 +1,4 @@
-import { TupleResult } from "../utils";
+import { Err, Ok, Result } from "@sniptt/monads";
 import { Money } from "./Money";
 
 export type WalletTransactionEvent = {
@@ -47,15 +47,14 @@ export class Wallet {
     return false;
   }
 
-  private RemoveMoney(money: Money): TupleResult {
+  private RemoveMoney(money: Money): Result<undefined, string> {
     const totalCents = this._money.cents + this._money.units * 100;
     const totalCentsToRemove = money.cents + money.units * 100;
 
     if (totalCentsToRemove > totalCents) {
-      return [
-        false,
-        `Not enough money in the wallet to remove ${money.toString()}.`,
-      ];
+      return Err(
+        `Not enough money in the wallet to remove ${money.toString()}.`
+      );
     }
 
     const remainingTotalCents = totalCents - totalCentsToRemove;
@@ -65,13 +64,10 @@ export class Wallet {
 
     if (remainingMoney !== undefined) {
       this._money = remainingMoney;
-      return [true];
+      return Ok(undefined);
     }
 
-    return [
-      false,
-      "Unspecified error happend while removing money from wallet.",
-    ];
+    return Err("Unspecified error happend while removing money from wallet.");
   }
 
   get OwnerId() {
@@ -98,16 +94,16 @@ export class Wallet {
     ];
   }
 
-  Give(money: Money, toOwnerId: string): TupleResult {
+  Give(money: Money, toOwnerId: string): Result<undefined, string> {
     if (toOwnerId.length === 0) throw new Error("toOwnerId was empty.");
 
     const removeResult = this.RemoveMoney(money);
 
-    if (removeResult[0] === false)
-      return [
-        false,
-        `Failed to give owner "${toOwnerId}" money: ${removeResult[1]}`,
-      ];
+    if (removeResult.isErr()) {
+      return Err(
+        `Failed to give owner "${toOwnerId}" money: ${removeResult.unwrapErr()}`
+      );
+    }
 
     this._transactionEvents = [
       ...this._transactionEvents,
@@ -119,6 +115,6 @@ export class Wallet {
       },
     ];
 
-    return [true];
+    return Ok(undefined);
   }
 }
