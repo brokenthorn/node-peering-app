@@ -33,11 +33,11 @@ process.on(SIGUSR2, () => shutdownOnSignal(SIGUSR2));
 // close and restart the server on internal server errors:
 server.on("error", (e) => {
   logInformation(`Error: ${e.name}: ${e.message}`);
+  logInformation("Restarting server.");
 
   setTimeout(() => {
-    server.close();
-    listen();
-  }, 1000);
+    server.close(() => listen());
+  }, 3000);
 });
 
 const port = Number(process.env.PORT) || 8080;
