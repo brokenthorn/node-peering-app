@@ -44,8 +44,10 @@ const port = Number(process.env.PORT) || 8080;
 const hostname = process.env.HOSTNAME ?? "localhost";
 
 /**
- * Starts the HTTP server listening for connections.
- * @returns The server object.
+ * Starts the HTTP server listening for connections on the interface
+ * and port defined by the `HOSTNAME` and `PORT` environment variables
+ * or `localhost:8080` if the variables are not defined.
+ * @returns The http server object.
  */
 export const listen = () => {
   return server.listen(port, hostname, () => {
